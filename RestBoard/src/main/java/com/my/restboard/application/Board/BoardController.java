@@ -22,7 +22,7 @@ public class BoardController {
 
     @PostMapping("board")
     public CommonResponse<?> createBoard(
-                        @AuthenticationPrincipal String userId, @RequestBody BoardSaveRequestDTO request){
+                        @AuthenticationPrincipal String userId, @RequestBody BoardRequestDTO request){
 
         try {
 
@@ -83,5 +83,42 @@ public class BoardController {
 
             return response;
         }
+    }
+
+    @PutMapping("board/{board_num}")
+    public CommonResponse updateBoard( @AuthenticationPrincipal String userId,
+                                       @PathVariable Long board_num,
+                                       @RequestBody BoardRequestDTO request) {
+
+        try {
+
+            if(!userId.equals(request.getUserId())){
+                throw new RuntimeException("본인만 수정 할 수 있습니다.");
+            }
+
+            Long return_num = service.update(board_num, request);
+
+            CommonResponse response = CommonResponse.builder()
+                    .success(true)
+                    .data(return_num)
+                    .build();
+
+            return response;
+            
+        } catch (Exception e) {
+
+            Error error = Error.builder()
+                    .message(e.getMessage())
+                    .status(500)
+                    .build();
+
+            CommonResponse response = CommonResponse.builder()
+                    .success(false)
+                    .error(error)
+                    .build();
+
+            return response;
+        }
+        
     }
 }

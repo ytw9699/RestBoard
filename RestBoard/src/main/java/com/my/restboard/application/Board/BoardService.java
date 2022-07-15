@@ -14,7 +14,7 @@ public class BoardService {
 	private final BoardRepository repository;
 
 	@Transactional
-	public Long create(BoardSaveRequestDTO request) {
+	public Long create(BoardRequestDTO request) {
 
 		BoardEntity entity = request.toEntity();
 
@@ -35,6 +35,22 @@ public class BoardService {
 		BoardEntity entity = result.get();
 
 		return new BoardResponseDTO(entity);
+	}
+
+	@Transactional
+	public Long update(Long board_num, BoardRequestDTO requestDto) {
+
+		Optional<BoardEntity> result = repository.findById(board_num);
+
+		if (!result.isPresent()) {
+			new IllegalArgumentException("해당 하는 글이 없습니다");
+		}
+
+		BoardEntity entity = result.get();
+
+		entity.update(requestDto.getTitle(), requestDto.getContent());
+
+		return board_num;
 	}
 
 	private void validate(final BoardEntity entity){

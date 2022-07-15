@@ -4,14 +4,14 @@ import lombok.*;
 
 @Getter
 @NoArgsConstructor
-public class BoardSaveRequestDTO {
+public class BoardRequestDTO {
 
 	private String title;
 	private String userId;
 	private String content;
 
 	@Builder
-	public BoardSaveRequestDTO(String title, String content, String userId) {
+	public BoardRequestDTO(String title, String content, String userId) {
 		this.title = title;
 		this.content = content;
 		this.userId = userId;
