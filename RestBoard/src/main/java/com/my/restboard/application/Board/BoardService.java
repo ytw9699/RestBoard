@@ -18,7 +18,7 @@ public class BoardService {
 
 		BoardEntity entity = request.toEntity();
 
-		validate(entity);
+		createValidate(entity);
 
 		return repository.save(entity).getBoard_num();
 	}
@@ -67,7 +67,7 @@ public class BoardService {
 		repository.delete(entity);
 	}
 
-	private void validate(final BoardEntity entity){
+	private void createValidate(final BoardEntity entity){
 
 		if(entity == null) {
 
