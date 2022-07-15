@@ -119,6 +119,46 @@ public class BoardController {
 
             return response;
         }
+<<<<<<< HEAD
         
     }
+=======
+    }
+
+    @DeleteMapping("board/{board_num}")
+    public CommonResponse deleteBoard(@AuthenticationPrincipal String userId, @PathVariable Long board_num,
+                                                @RequestBody BoardRequestDTO request) {
+
+        try {
+
+            if(!userId.equals(request.getUserId())){
+                throw new RuntimeException("본인만 삭제 할 수 있습니다.");
+            }
+            
+            service.delete(board_num);
+
+            CommonResponse response = CommonResponse.builder()
+                    .success(true)
+                    .build();
+
+            return response;
+            
+        }  catch (Exception e) {
+
+            Error error = Error.builder()
+                    .message(e.getMessage())
+                    .status(500)
+                    .build();
+
+            CommonResponse response = CommonResponse.builder()
+                    .success(false)
+                    .error(error)
+                    .build();
+
+            return response;
+
+        }
+    }
+
+>>>>>>> feature/14
 }

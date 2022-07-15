@@ -53,6 +53,23 @@ public class BoardService {
 		return board_num;
 	}
 
+<<<<<<< HEAD
+=======
+	@Transactional
+	public void delete (Long board_num) {
+
+		Optional<BoardEntity> result = repository.findById(board_num);
+
+		if (!result.isPresent()) {
+			new IllegalArgumentException("해당 하는 글이 없습니다");
+		}
+
+		BoardEntity entity = result.get();
+
+		repository.delete(entity);
+	}
+
+>>>>>>> feature/14
 	private void validate(final BoardEntity entity){
 
 		if(entity == null) {
