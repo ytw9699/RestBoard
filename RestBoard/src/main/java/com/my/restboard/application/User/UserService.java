@@ -2,6 +2,9 @@ package com.my.restboard.application.User;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -26,5 +29,20 @@ public class UserService {
 		}
 
 		return userRepository.save(userEntity);
+	}
+
+	public UserEntity getUserAuthenticated(final String userId, final String password, final PasswordEncoder encoder) throws Exception{
+
+		final UserEntity userEntity = userRepository.findByUserId(userId);
+
+		if(userEntity == null){
+			throw new UsernameNotFoundException(userId);
+		}
+
+		if(!encoder.matches(password, userEntity.getPassword())) {
+			throw new BadCredentialsException(userId);
+		}
+
+		return userEntity;
 	}
 }
