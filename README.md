@@ -1,5 +1,5 @@
 # RestBoard
-
+- RestBoard는 REST API기반의 게시판 프로젝트 입니다.
 ## 실행 clone 주소  
 ` https : https://github.com/ytw9699/RestBoard.git`  
 ` ssh : git@github.com:ytw9699/RestBoard.git`  
