@@ -1,7 +1,11 @@
 package com.my.restboard.application.User;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.my.restboard.common.CommonResponse;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.MediaType;
@@ -43,6 +47,7 @@ public class UserControllerTest {
                 .build();
     }
 
+    @DisplayName("회원가입 후 검증")
     @Test
     public void createUser() throws Exception{
 
@@ -71,5 +76,38 @@ public class UserControllerTest {
         PasswordEncoder encoder = new BCryptPasswordEncoder();
         assertThat(encoder.matches(password, user.getPassword()));
 
+    }
+
+    @DisplayName("인증후 토큰 유효성 검증")
+    @Test
+    public void authenticate() throws Exception{
+
+        String userId = "admin";
+        String password = "admin";
+
+        UserRequestDTO request = UserRequestDTO.builder()
+                .userId(userId)
+                .password(password)
+                .build();
+
+        String url = "http://localhost:" + port + "/auth/signin";
+
+        String response = mvc.perform(post(url)
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(new ObjectMapper().writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString();
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        CommonResponse commonResponse = objectMapper.readValue(response, CommonResponse.class);
+        String token = (String)commonResponse.getData();
+        String SECRET_KEY = "123gf1ffdhtycUeR4uUAt7WJa5raD7EN3Os4yyYuHxMEbSFdd4XXyffgB0F7Bq4dH";
+
+        Claims claims = Jwts.parser()
+                .setSigningKey(SECRET_KEY)
+                .parseClaimsJws(token)
+                .getBody();
+
+        assertThat(claims.getSubject()).isEqualTo(userId);
     }
 }
