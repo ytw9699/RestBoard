@@ -22,6 +22,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(SpringExtension.class)
@@ -136,5 +137,37 @@ public class BoardControllerTest {
         assertThat(entity.getTitle()).isEqualTo(title);
         assertThat(entity.getContent()).isEqualTo(content);
         assertThat(entity.getUserId()).isEqualTo(userId);
+    }
+
+    @DisplayName("글 작성 후 삭제 검증")
+    @Test
+    public void deleteBoard() throws Exception {
+
+        BoardEntity createdEntity = repository.save(BoardEntity.builder()
+                .title("title")
+                .content("content")
+                .userId("admin")
+                .build());
+
+        Long board_num = createdEntity.getBoard_num();
+
+        BoardRequestDTO requestDto = BoardRequestDTO.builder()
+                .userId("admin")
+                .build();
+
+        String url = "http://localhost:" + port + "/board/"+board_num;
+
+        String response =  mvc.perform(delete(url)
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .header("Authorization","Bearer "+token)
+                .content(new ObjectMapper().writeValueAsString(requestDto)))
+                .andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString();
+
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        CommonResponse commonResponse = objectMapper.readValue(response, CommonResponse.class);
+
+        assertThat(commonResponse.isSuccess());
     }
 }
