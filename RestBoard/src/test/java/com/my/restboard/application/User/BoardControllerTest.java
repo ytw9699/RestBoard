@@ -22,10 +22,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-<<<<<<< HEAD
-=======
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
->>>>>>> feature/14
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(SpringExtension.class)
@@ -141,8 +138,6 @@ public class BoardControllerTest {
         assertThat(entity.getContent()).isEqualTo(content);
         assertThat(entity.getUserId()).isEqualTo(userId);
     }
-<<<<<<< HEAD
-=======
 
     @DisplayName("글 작성 후 삭제 검증")
     @Test
@@ -175,5 +170,4 @@ public class BoardControllerTest {
 
         assertThat(commonResponse.isSuccess());
     }
->>>>>>> feature/14
 }

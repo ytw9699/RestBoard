@@ -119,10 +119,6 @@ public class BoardController {
 
             return response;
         }
-<<<<<<< HEAD
-        
-    }
-=======
     }
 
     @DeleteMapping("board/{board_num}")
@@ -159,6 +155,4 @@ public class BoardController {
 
         }
     }
-
->>>>>>> feature/14
 }

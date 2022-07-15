@@ -53,8 +53,6 @@ public class BoardService {
 		return board_num;
 	}
 
-<<<<<<< HEAD
-=======
 	@Transactional
 	public void delete (Long board_num) {
 
@@ -69,7 +67,6 @@ public class BoardService {
 		repository.delete(entity);
 	}
 
->>>>>>> feature/14
 	private void validate(final BoardEntity entity){
 
 		if(entity == null) {
@@ -93,5 +90,4 @@ public class BoardService {
 		}
 
 	}
-
 }
