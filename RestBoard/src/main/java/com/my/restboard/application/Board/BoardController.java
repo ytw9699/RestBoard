@@ -30,7 +30,7 @@ public class BoardController {
                 throw new RuntimeException("작성 할 수 없습니다.");
             }
 
-            Long boardnum = service.save(request);
+            Long boardnum = service.create(request);
 
             CommonResponse response = CommonResponse.builder()
                     .success(true)
@@ -40,6 +40,36 @@ public class BoardController {
             return response;
 
         } catch (Exception e) {
+
+            Error error = Error.builder()
+                    .message(e.getMessage())
+                    .status(500)
+                    .build();
+
+            CommonResponse response = CommonResponse.builder()
+                    .success(false)
+                    .error(error)
+                    .build();
+
+            return response;
+        }
+    }
+
+    @GetMapping("board")
+    public CommonResponse<?> readBoard(@RequestParam("board_num") Long board_num) {
+
+        try {
+
+            BoardResponseDTO dto = service.read(board_num);
+
+            CommonResponse response = CommonResponse.builder()
+                    .success(true)
+                    .data(dto)
+                    .build();
+
+            return response;
+
+        }catch (Exception e) {
 
             Error error = Error.builder()
                     .message(e.getMessage())
