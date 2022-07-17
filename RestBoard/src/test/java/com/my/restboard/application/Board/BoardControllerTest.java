@@ -1,9 +1,7 @@
-package com.my.restboard.application.User;
+package com.my.restboard.application.Board;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.my.restboard.application.Board.BoardEntity;
-import com.my.restboard.application.Board.BoardRepository;
-import com.my.restboard.application.Board.BoardRequestDTO;
+import com.my.restboard.application.User.UserEntity;
 import com.my.restboard.common.CommonResponse;
 import com.my.restboard.security.TokenProvider;
 import org.junit.jupiter.api.BeforeEach;
