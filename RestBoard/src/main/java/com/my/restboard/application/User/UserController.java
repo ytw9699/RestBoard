@@ -23,12 +23,6 @@ public class UserController {
 	private final TokenProvider tokenProvider;
 	private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
-	@GetMapping("/test")
-	public String test(){
-
-		return "test";
-	}
-
 	@PostMapping("/auth/signup")
 	public CommonResponse<?> createUser(@RequestBody UserRequestDTO request) {
 

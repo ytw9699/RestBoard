@@ -14,12 +14,6 @@ public class BoardController {
 
     private final BoardService service;
 
-    @GetMapping("/board/test")
-    public String test(){
-
-        return "test";
-    }
-
     @PostMapping("board")
     public CommonResponse<?> createBoard(
                         @AuthenticationPrincipal String userId, @RequestBody BoardRequestDTO request){
