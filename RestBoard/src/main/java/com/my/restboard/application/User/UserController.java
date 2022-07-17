@@ -74,7 +74,7 @@ public class UserController {
 					passwordEncoder
 			);
 
-			final String token = tokenProvider.createToken(userEntity); //토큰 생성
+			final String token = "Bearer "+tokenProvider.createToken(userEntity); //토큰 생성
 
 			CommonResponse response = CommonResponse.builder()
 					.success(true)

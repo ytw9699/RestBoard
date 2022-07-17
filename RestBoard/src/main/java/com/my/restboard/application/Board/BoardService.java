@@ -29,7 +29,7 @@ public class BoardService {
 		Optional<BoardEntity> result = repository.findById(board_num);
 
 		if (!result.isPresent()) {
-			new IllegalArgumentException("해당 하는 글이 없습니다");
+			throw new IllegalArgumentException("해당 하는 글이 없습니다");
 		}
 
 		BoardEntity entity = result.get();
@@ -43,7 +43,7 @@ public class BoardService {
 		Optional<BoardEntity> result = repository.findById(board_num);
 
 		if (!result.isPresent()) {
-			new IllegalArgumentException("해당 하는 글이 없습니다");
+			throw new IllegalArgumentException("해당 하는 글이 없습니다");
 		}
 
 		BoardEntity entity = result.get();
@@ -59,7 +59,7 @@ public class BoardService {
 		Optional<BoardEntity> result = repository.findById(board_num);
 
 		if (!result.isPresent()) {
-			new IllegalArgumentException("해당 하는 글이 없습니다");
+			throw new IllegalArgumentException("해당 하는 글이 없습니다");
 		}
 
 		BoardEntity entity = result.get();
@@ -88,6 +88,5 @@ public class BoardService {
 
 			throw new RuntimeException("글 내용이 없습니다.");
 		}
-
 	}
 }
