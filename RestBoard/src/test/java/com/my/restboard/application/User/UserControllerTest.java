@@ -105,7 +105,7 @@ public class UserControllerTest {
 
         Claims claims = Jwts.parser()
                 .setSigningKey(SECRET_KEY)
-                .parseClaimsJws(token)
+                .parseClaimsJws(token.substring(7))
                 .getBody();
 
         assertThat(claims.getSubject()).isEqualTo(userId);
