@@ -11,7 +11,7 @@ public class BoardEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long board_num;
+	private Long boardNum;
 
 	@Column(length = 200, nullable = false)
 	private String userId;

@@ -83,9 +83,9 @@ public class BoardControllerTest {
 
         CommonResponse commonResponse = objectMapper.readValue(response, CommonResponse.class);
 
-        Long board_num = Long.valueOf((int)commonResponse.getData());
+        Long boardNum = Long.valueOf((int)commonResponse.getData());
 
-        BoardEntity entity  = repository.findById(board_num).get();
+        BoardEntity entity  = repository.findById(boardNum).get();
 
         assertThat(entity.getTitle()).isEqualTo(title);
         assertThat(entity.getContent()).isEqualTo(content);
@@ -103,7 +103,7 @@ public class BoardControllerTest {
                 .userId("admin")
                 .build());
 
-        Long board_num = createdEntity.getBoard_num();
+        Long boardNum = createdEntity.getBoardNum();
 
         String title = "수정제목";
         String content = "수정내용";
@@ -115,7 +115,7 @@ public class BoardControllerTest {
                 .userId(userId)
                 .build();
 
-        String url = "http://localhost:" + port + "/board/"+board_num;
+        String url = "http://localhost:" + port + "/board/"+boardNum;
 
         String response =  mvc.perform(put(url)
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
@@ -147,13 +147,13 @@ public class BoardControllerTest {
                 .userId("admin")
                 .build());
 
-        Long board_num = createdEntity.getBoard_num();
+        Long boardNum = createdEntity.getBoardNum();
 
         BoardRequestDTO requestDto = BoardRequestDTO.builder()
                 .userId("admin")
                 .build();
 
-        String url = "http://localhost:" + port + "/board/"+board_num;
+        String url = "http://localhost:" + port + "/board/"+boardNum;
 
         String response =  mvc.perform(delete(url)
                 .contentType(MediaType.APPLICATION_JSON_UTF8)

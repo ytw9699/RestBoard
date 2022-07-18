@@ -45,11 +45,11 @@ public class BoardController {
 
     @Operation(summary = "게시글 조회", description = "글번호를 이용하여 조회합니다.")
     @GetMapping("board")
-    public CommonResponse<?> readBoard(@RequestParam("board_num") Long board_num){
+    public CommonResponse<?> readBoard(@RequestParam("boardNum") Long boardNum){
 
         try{
 
-            BoardResponseDTO dto = service.read(board_num);
+            BoardResponseDTO dto = service.read(boardNum);
 
             CommonResponse response = CommonResponse.builder()
                     .success(true)
@@ -65,9 +65,9 @@ public class BoardController {
     }
 
     @Operation(summary = "게시글 수정", description = "글번호, 제목, 내용, 글의 아이디를 이용하여 수정합니다.")
-    @PutMapping("board/{board_num}")
+    @PutMapping("board/{boardNum}")
     public CommonResponse updateBoard( @AuthenticationPrincipal String userId,
-                                       @PathVariable Long board_num,
+                                       @PathVariable Long boardNum,
                                        @RequestBody BoardRequestDTO request) {
 
         try{
@@ -76,7 +76,7 @@ public class BoardController {
                 throw new RuntimeException("본인만 수정 할 수 있습니다.");
             }
 
-            Long return_num = service.update(board_num, request);
+            Long return_num = service.update(boardNum, userId, request);
 
             CommonResponse response = CommonResponse.builder()
                     .success(true)
@@ -92,8 +92,8 @@ public class BoardController {
     }
 
     @Operation(summary = "게시글 삭제", description = "글번호, 글의 아이디를 이용하여 삭제합니다.")
-    @DeleteMapping("board/{board_num}")
-    public CommonResponse deleteBoard(@AuthenticationPrincipal String userId, @PathVariable Long board_num,
+    @DeleteMapping("board/{boardNum}")
+    public CommonResponse deleteBoard(@AuthenticationPrincipal String userId, @PathVariable Long boardNum,
                                       @RequestBody String requestedId) {
 
         try{
@@ -102,7 +102,7 @@ public class BoardController {
                 throw new RuntimeException("본인만 삭제 할 수 있습니다.");
             }
 
-            service.delete(board_num);
+            service.delete(boardNum, userId);
 
             CommonResponse response = CommonResponse.builder()
                     .success(true)

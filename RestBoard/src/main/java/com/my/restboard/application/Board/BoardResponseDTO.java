@@ -5,13 +5,13 @@ import lombok.Getter;
 @Getter
 public class BoardResponseDTO {
 
-    private Long board_num;
+    private Long boardNum;
     private String title;
     private String content;
     private String userId;
 
     public BoardResponseDTO(BoardEntity entity) {
-        this.board_num = entity.getBoard_num();
+        this.boardNum = entity.getBoardNum();
         this.title = entity.getTitle();
         this.content = entity.getContent();
         this.userId = entity.getUserId();
