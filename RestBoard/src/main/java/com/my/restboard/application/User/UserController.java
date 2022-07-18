@@ -3,13 +3,11 @@ package com.my.restboard.application.User;
 import com.my.restboard.common.CommonResponse;
 import com.my.restboard.common.Error;
 import com.my.restboard.security.TokenProvider;
-import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,7 +25,7 @@ public class UserController {
 
 	@Operation(summary = "회원가입", description = "아이디, 닉네임, 비밀번호를 받아 회원가입합니다.")
 	@PostMapping("/auth/signup")
-	public CommonResponse<?> createUser(@RequestBody UserRequestDTO request) {
+	public CommonResponse<?> createUser(@RequestBody UserSavedRequestDTO request) {
 
 		try {
 
@@ -62,7 +60,7 @@ public class UserController {
 
 	@Operation(summary = "로그인", description = "아이디, 비밀번호를 받아 로그인합니다.")
 	@PostMapping("/auth/signin")
-	public CommonResponse<?> authenticate(@RequestBody UserRequestDTO request) {
+	public CommonResponse<?> authenticate(@RequestBody UserSigninRequestDTO request) {
 
 		try{
 

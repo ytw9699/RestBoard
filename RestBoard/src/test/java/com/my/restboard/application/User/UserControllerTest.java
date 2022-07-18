@@ -56,7 +56,7 @@ public class UserControllerTest {
         String nickName = "nickName_"+uuid;
         String password = "password";
 
-        UserRequestDTO request = UserRequestDTO.builder()
+        UserSavedRequestDTO request = UserSavedRequestDTO.builder()
                 .userId(userId)
                 .nickName(nickName)
                 .password(password)
@@ -85,7 +85,7 @@ public class UserControllerTest {
         String userId = "admin";
         String password = "admin";
 
-        UserRequestDTO request = UserRequestDTO.builder()
+        UserSigninRequestDTO request = UserSigninRequestDTO.builder()
                 .userId(userId)
                 .password(password)
                 .build();
