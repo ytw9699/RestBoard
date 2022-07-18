@@ -20,13 +20,13 @@ public class BoardService {
 
 		createValidate(entity);
 
-		return repository.save(entity).getBoard_num();
+		return repository.save(entity).getBoardNum();
 	}
 
 	@Transactional(readOnly = true)
-	public BoardResponseDTO read(Long board_num) {
+	public BoardResponseDTO read(Long boardNum) {
 
-		Optional<BoardEntity> result = repository.findById(board_num);
+		Optional<BoardEntity> result = repository.findById(boardNum);
 
 		if (!result.isPresent()) {
 			throw new IllegalArgumentException("해당 하는 글이 없습니다");
@@ -38,9 +38,9 @@ public class BoardService {
 	}
 
 	@Transactional
-	public Long update(Long board_num, BoardRequestDTO requestDto) {
+	public Long update(Long boardNum, String userId, BoardRequestDTO requestDto) {
 
-		Optional<BoardEntity> result = repository.findById(board_num);
+		Optional<BoardEntity> result = repository.findByBoardNumAndUserId(boardNum, userId);
 
 		if (!result.isPresent()) {
 			throw new IllegalArgumentException("해당 하는 글이 없습니다");
@@ -50,13 +50,13 @@ public class BoardService {
 
 		entity.update(requestDto.getTitle(), requestDto.getContent());
 
-		return board_num;
+		return boardNum;
 	}
 
 	@Transactional
-	public void delete (Long board_num) {
+	public void delete (Long boardNum, String userId) {
 
-		Optional<BoardEntity> result = repository.findById(board_num);
+		Optional<BoardEntity> result = repository.findByBoardNumAndUserId(boardNum, userId);
 
 		if (!result.isPresent()) {
 			throw new IllegalArgumentException("해당 하는 글이 없습니다");
