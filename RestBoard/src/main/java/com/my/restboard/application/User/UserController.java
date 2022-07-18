@@ -44,17 +44,7 @@ public class UserController {
 
 		}catch (Exception e) {
 
-			Error error = Error.builder()
-					.message(e.getMessage())
-					.status(500)
-					.build();
-
-			CommonResponse response = CommonResponse.builder()
-					.success(false)
-					.error(error)
-					.build();
-
-			return response;
+			return exceptionHandle(e, e.getMessage(), 500);
 		}
 	}
 
@@ -95,17 +85,24 @@ public class UserController {
 				errormsg = "로그인 할 수 없습니다. 관리자에게 문의해주세요";
 			}
 
-			Error error = Error.builder()
-					.message(errormsg)
-					.status(500)
-					.build();
-
-			CommonResponse response = CommonResponse.builder()
-					.success(false)
-					.error(error)
-					.build();
-
-			return response;
+			return exceptionHandle(e, errormsg, 500);
 		}
+	}
+
+	private CommonResponse exceptionHandle(Exception e, String message, int status){
+
+		e.printStackTrace();
+
+		Error error = Error.builder()
+				.message(message)
+				.status(status)
+				.build();
+
+		CommonResponse response = CommonResponse.builder()
+				.success(false)
+				.error(error)
+				.build();
+
+		return response;
 	}
 }

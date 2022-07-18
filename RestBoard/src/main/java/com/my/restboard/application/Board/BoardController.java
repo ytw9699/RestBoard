@@ -22,10 +22,10 @@ public class BoardController {
     public CommonResponse<?> createBoard(
                         @AuthenticationPrincipal String userId, @RequestBody BoardRequestDTO request){
 
-        try {
+        try{
 
             if(!userId.equals(request.getUserId())){
-                throw new RuntimeException("작성 할 수 없습니다.");
+                throw new RuntimeException("작성자 아이디를 확인해주세요.");
             }
 
             Long boardnum = service.create(request);
@@ -37,19 +37,9 @@ public class BoardController {
 
             return response;
 
-        } catch (Exception e) {
+        }catch (Exception e) {
 
-            Error error = Error.builder()
-                    .message(e.getMessage())
-                    .status(500)
-                    .build();
-
-            CommonResponse response = CommonResponse.builder()
-                    .success(false)
-                    .error(error)
-                    .build();
-
-            return response;
+            return exceptionHandle(e, e.getMessage(), 500);
         }
     }
 
@@ -57,7 +47,7 @@ public class BoardController {
     @GetMapping("board")
     public CommonResponse<?> readBoard(@RequestParam("board_num") Long board_num){
 
-        try {
+        try{
 
             BoardResponseDTO dto = service.read(board_num);
 
@@ -70,17 +60,7 @@ public class BoardController {
 
         }catch (Exception e) {
 
-            Error error = Error.builder()
-                    .message(e.getMessage())
-                    .status(500)
-                    .build();
-
-            CommonResponse response = CommonResponse.builder()
-                    .success(false)
-                    .error(error)
-                    .build();
-
-            return response;
+            return exceptionHandle(e, e.getMessage(), 500);
         }
     }
 
@@ -90,7 +70,7 @@ public class BoardController {
                                        @PathVariable Long board_num,
                                        @RequestBody BoardRequestDTO request) {
 
-        try {
+        try{
 
             if(!userId.equals(request.getUserId())){
                 throw new RuntimeException("본인만 수정 할 수 있습니다.");
@@ -105,19 +85,9 @@ public class BoardController {
 
             return response;
             
-        } catch (Exception e) {
+        }catch (Exception e) {
 
-            Error error = Error.builder()
-                    .message(e.getMessage())
-                    .status(500)
-                    .build();
-
-            CommonResponse response = CommonResponse.builder()
-                    .success(false)
-                    .error(error)
-                    .build();
-
-            return response;
+            return exceptionHandle(e, e.getMessage(), 500);
         }
     }
 
@@ -126,7 +96,7 @@ public class BoardController {
     public CommonResponse deleteBoard(@AuthenticationPrincipal String userId, @PathVariable Long board_num,
                                       @RequestBody String requestedId) {
 
-        try {
+        try{
 
             if(!userId.equals(requestedId)){
                 throw new RuntimeException("본인만 삭제 할 수 있습니다.");
@@ -140,20 +110,27 @@ public class BoardController {
 
             return response;
             
-        }  catch (Exception e) {
+        }catch (Exception e) {
 
-            Error error = Error.builder()
-                    .message(e.getMessage())
-                    .status(500)
-                    .build();
-
-            CommonResponse response = CommonResponse.builder()
-                    .success(false)
-                    .error(error)
-                    .build();
-
-            return response;
+            return exceptionHandle(e, e.getMessage(), 500);
 
         }
+    }
+
+    private CommonResponse exceptionHandle(Exception e, String message, int status){
+
+        e.printStackTrace();
+
+        Error error = Error.builder()
+                .message(message)
+                .status(status)
+                .build();
+
+        CommonResponse response = CommonResponse.builder()
+                .success(false)
+                .error(error)
+                .build();
+
+        return response;
     }
 }
