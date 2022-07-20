@@ -8,6 +8,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
@@ -16,6 +17,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -60,11 +62,11 @@ public class BoardControllerTest {
     @Test
     public void createBoard() throws Exception {
 
-        String title = "글제목";
+        String title = "제목";
         String content = "내용";
         String userId = "admin";
 
-        BoardRequestDTO requestDto = BoardRequestDTO.builder()
+        BoardSavedRequestDTO requestDto = BoardSavedRequestDTO.builder()
                 .title(title)
                 .content(content)
                 .userId(userId)
@@ -90,7 +92,6 @@ public class BoardControllerTest {
         assertThat(entity.getTitle()).isEqualTo(title);
         assertThat(entity.getContent()).isEqualTo(content);
         assertThat(entity.getUserId()).isEqualTo(userId);
-
     }
 
     @DisplayName("글 작성 후, 재차 수정 후 조회 검증")
@@ -98,9 +99,10 @@ public class BoardControllerTest {
     public void updateBoard() throws Exception {
 
         BoardEntity createdEntity = repository.save(BoardEntity.builder()
-                .title("title")
-                .content("content")
+                .title("제목")
+                .content("내용")
                 .userId("admin")
+                .boardLocked(1)
                 .build());
 
         Long boardNum = createdEntity.getBoardNum();
@@ -108,11 +110,13 @@ public class BoardControllerTest {
         String title = "수정제목";
         String content = "수정내용";
         String userId = "admin";
+        int boardLocked = 0;
 
-        BoardRequestDTO requestDto = BoardRequestDTO.builder()
+        BoardUpdatedRequestDTO requestDto = BoardUpdatedRequestDTO.builder()
                 .title(title)
                 .content(content)
                 .userId(userId)
+                .boardLocked(boardLocked)
                 .build();
 
         String url = "http://localhost:" + port + "/board/"+boardNum;
@@ -135,6 +139,7 @@ public class BoardControllerTest {
         assertThat(entity.getTitle()).isEqualTo(title);
         assertThat(entity.getContent()).isEqualTo(content);
         assertThat(entity.getUserId()).isEqualTo(userId);
+        assertThat(entity.getBoardLocked()).isEqualTo(boardLocked);
     }
 
     @DisplayName("글 작성 후 삭제 검증")
@@ -142,30 +147,25 @@ public class BoardControllerTest {
     public void deleteBoard() throws Exception {
 
         BoardEntity createdEntity = repository.save(BoardEntity.builder()
-                .title("title")
-                .content("content")
+                .title("제목")
+                .content("내용")
                 .userId("admin")
                 .build());
 
         Long boardNum = createdEntity.getBoardNum();
 
-        BoardRequestDTO requestDto = BoardRequestDTO.builder()
-                .userId("admin")
-                .build();
-
         String url = "http://localhost:" + port + "/board/"+boardNum;
 
         String response =  mvc.perform(delete(url)
-                .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .header("Authorization","Bearer "+token)
-                .content(new ObjectMapper().writeValueAsString(requestDto)))
+                .header("writerId","admin")
+                .content(new ObjectMapper().writeValueAsString("")))
                 .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString();
 
         ObjectMapper objectMapper = new ObjectMapper();
 
         CommonResponse commonResponse = objectMapper.readValue(response, CommonResponse.class);
-
-        assertThat(commonResponse.isSuccess());
+        assertTrue(commonResponse.isSuccess());
     }
 }

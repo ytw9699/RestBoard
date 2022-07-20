@@ -22,16 +22,20 @@ public class BoardEntity {
 	@Column(columnDefinition = "TEXT", nullable = false)
 	private String content;
 
+	private int boardLocked;
+
 	@Builder
-	public BoardEntity(String title, String content, String userId) {
+	public BoardEntity(String title, String content, String userId, int boardLocked) {
 		this.title = title;
 		this.content = content;
 		this.userId = userId;
+		this.boardLocked = boardLocked;
 	}
 
-	public void update(String title, String content) {
+	public void update(String title, String content, int boardLocked) {
 		this.title = title;
 		this.content = content;
+		this.boardLocked = boardLocked;
 	}
 }
 

@@ -2,13 +2,12 @@ package com.my.restboard.application.Board;
 
 import com.my.restboard.common.CommonResponse;
 import com.my.restboard.common.Error;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 @Slf4j
 @RestController
@@ -19,8 +18,8 @@ public class BoardController {
 
     @Operation(summary = "게시글 등록", description = "제목, 내용, 아이디를 이용하여 글을 등록합니다.")
     @PostMapping("board")
-    public CommonResponse<?> createBoard(
-                        @AuthenticationPrincipal String userId, @RequestBody BoardRequestDTO request){
+    public CommonResponse<?> createBoard(@AuthenticationPrincipal String userId,
+                                         @RequestBody BoardSavedRequestDTO request){
 
         try{
 
@@ -45,11 +44,12 @@ public class BoardController {
 
     @Operation(summary = "게시글 조회", description = "글번호를 이용하여 조회합니다.")
     @GetMapping("board")
-    public CommonResponse<?> readBoard(@RequestParam("boardNum") Long boardNum){
+    public CommonResponse<?> readBoard(@RequestParam("boardNum") Long boardNum,
+                                       @AuthenticationPrincipal @ApiIgnore String userId){
 
         try{
 
-            BoardResponseDTO dto = service.read(boardNum);
+            BoardResponseDTO dto = service.read(boardNum, userId);
 
             CommonResponse response = CommonResponse.builder()
                     .success(true)
@@ -64,11 +64,11 @@ public class BoardController {
         }
     }
 
-    @Operation(summary = "게시글 수정", description = "글번호, 제목, 내용, 글의 아이디를 이용하여 수정합니다.")
+    @Operation(summary = "게시글 수정", description = "글번호, 제목, 내용, 잠금여부, 글의 아이디를 이용하여 수정합니다.")
     @PutMapping("board/{boardNum}")
     public CommonResponse updateBoard( @AuthenticationPrincipal String userId,
                                        @PathVariable Long boardNum,
-                                       @RequestBody BoardRequestDTO request) {
+                                       @RequestBody BoardUpdatedRequestDTO request) {
 
         try{
 
@@ -86,19 +86,20 @@ public class BoardController {
             return response;
             
         }catch (Exception e) {
-
+            
             return exceptionHandle(e, e.getMessage(), 500);
         }
     }
 
     @Operation(summary = "게시글 삭제", description = "글번호, 글의 아이디를 이용하여 삭제합니다.")
     @DeleteMapping("board/{boardNum}")
-    public CommonResponse deleteBoard(@AuthenticationPrincipal String userId, @PathVariable Long boardNum,
-                                      @RequestBody String requestedId) {
+    public CommonResponse deleteBoard(@AuthenticationPrincipal String userId,
+                                      @PathVariable Long boardNum,
+                                      @RequestHeader(name = "writerId") String writerId) {
 
         try{
 
-            if(!userId.equals(requestedId)){
+            if(!userId.equals(writerId)){
                 throw new RuntimeException("본인만 삭제 할 수 있습니다.");
             }
 
