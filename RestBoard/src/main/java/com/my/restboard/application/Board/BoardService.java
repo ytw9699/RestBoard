@@ -14,17 +14,17 @@ public class BoardService {
 	private final BoardRepository repository;
 
 	@Transactional
-	public Long create(BoardRequestDTO request) {
+	public Long create(BoardSavedRequestDTO request) {
 
 		BoardEntity entity = request.toEntity();
 
-		createValidate(entity);
+		validate(entity);
 
 		return repository.save(entity).getBoardNum();
 	}
 
 	@Transactional(readOnly = true)
-	public BoardResponseDTO read(Long boardNum) {
+	public BoardResponseDTO read(Long boardNum, String userId) {
 
 		Optional<BoardEntity> result = repository.findById(boardNum);
 
@@ -34,11 +34,19 @@ public class BoardService {
 
 		BoardEntity entity = result.get();
 
+		if(entity.getBoardLocked() == 1){
+			if(!userId.equals(entity.getUserId())){
+				throw new RuntimeException("글이 비공개 되어있습니다.");
+			}
+		}
+
 		return new BoardResponseDTO(entity);
 	}
 
 	@Transactional
-	public Long update(Long boardNum, String userId, BoardRequestDTO requestDto) {
+	public Long update(Long boardNum, String userId, BoardUpdatedRequestDTO requestDto) {
+
+		validate(requestDto.toEntity());
 
 		Optional<BoardEntity> result = repository.findByBoardNumAndUserId(boardNum, userId);
 
@@ -48,7 +56,7 @@ public class BoardService {
 
 		BoardEntity entity = result.get();
 
-		entity.update(requestDto.getTitle(), requestDto.getContent());
+		entity.update(requestDto.getTitle(), requestDto.getContent(), requestDto.getBoardLocked());
 
 		return boardNum;
 	}
@@ -67,7 +75,7 @@ public class BoardService {
 		repository.delete(entity);
 	}
 
-	private void createValidate(final BoardEntity entity){
+	private void validate(final BoardEntity entity){
 
 		if(entity == null) {
 
@@ -76,17 +84,17 @@ public class BoardService {
 
 		if(entity.getUserId() == null) {
 
-			throw new RuntimeException("아이디가 없습니다.");
+			throw new RuntimeException("요청 된 아이디값이 없습니다.");
 		}
 
 		if(entity.getTitle() == null) {
 
-			throw new RuntimeException("제목이 없습니다.");
+			throw new RuntimeException("요청 된 제목값이 없습니다.");
 		}
 
 		if(entity.getContent() == null) {
 
-			throw new RuntimeException("글 내용이 없습니다.");
+			throw new RuntimeException("요청 된 글 내용값이 없습니다.");
 		}
 	}
 }

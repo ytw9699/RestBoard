@@ -5,17 +5,17 @@ import lombok.*;
 
 @Getter
 @NoArgsConstructor
-public class BoardRequestDTO {
+public class BoardSavedRequestDTO {
 
-	@Schema(description = "제목", nullable = false, example = "제목을 적어주세요")
+	@Schema(description = "제목", nullable = false, example = "제목")
 	private String title;
 	@Schema(description = "아이디", nullable = false, example = "admin")
 	private String userId;
-	@Schema(description = "내용", nullable = false, example = "내용을 적어주세요")
+	@Schema(description = "내용", nullable = false, example = "내용")
 	private String content;
 
 	@Builder
-	public BoardRequestDTO(String title, String content, String userId) {
+	public BoardSavedRequestDTO(String title, String content, String userId) {
 		this.title = title;
 		this.content = content;
 		this.userId = userId;
