@@ -1,7 +1,6 @@
 package com.my.restboard.application.Board;
 
 import com.my.restboard.common.CommonResponse;
-import com.my.restboard.common.Error;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,25 +20,18 @@ public class BoardController {
     public CommonResponse<?> createBoard(@AuthenticationPrincipal String userId,
                                          @RequestBody BoardSavedRequestDTO request){
 
-        try{
-
-            if(!userId.equals(request.getUserId())){
-                throw new RuntimeException("작성자 아이디를 확인해주세요.");
-            }
-
-            Long boardnum = service.create(request);
-
-            CommonResponse response = CommonResponse.builder()
-                    .success(true)
-                    .data(boardnum)
-                    .build();
-
-            return response;
-
-        }catch (Exception e) {
-
-            return exceptionHandle(e, e.getMessage(), 500);
+        if(!userId.equals(request.getUserId())){
+            throw new RuntimeException("작성자 아이디를 확인해주세요.");
         }
+
+        Long boardnum = service.create(request);
+
+        CommonResponse response = CommonResponse.builder()
+                .success(true)
+                .data(boardnum)
+                .build();
+
+        return response;
     }
 
     @Operation(summary = "게시글 조회", description = "글번호를 이용하여 조회합니다.")
@@ -47,21 +39,14 @@ public class BoardController {
     public CommonResponse<?> readBoard(@RequestParam("boardNum") Long boardNum,
                                        @AuthenticationPrincipal @ApiIgnore String userId){
 
-        try{
+        BoardResponseDTO dto = service.read(boardNum, userId);
 
-            BoardResponseDTO dto = service.read(boardNum, userId);
+        CommonResponse response = CommonResponse.builder()
+                .success(true)
+                .data(dto)
+                .build();
 
-            CommonResponse response = CommonResponse.builder()
-                    .success(true)
-                    .data(dto)
-                    .build();
-
-            return response;
-
-        }catch (Exception e) {
-
-            return exceptionHandle(e, e.getMessage(), 500);
-        }
+        return response;
     }
 
     @Operation(summary = "게시글 수정", description = "글번호, 제목, 내용, 잠금여부, 글의 아이디를 이용하여 수정합니다.")
@@ -70,25 +55,19 @@ public class BoardController {
                                        @PathVariable Long boardNum,
                                        @RequestBody BoardUpdatedRequestDTO request) {
 
-        try{
 
-            if(!userId.equals(request.getUserId())){
-                throw new RuntimeException("본인만 수정 할 수 있습니다.");
-            }
-
-            Long return_num = service.update(boardNum, userId, request);
-
-            CommonResponse response = CommonResponse.builder()
-                    .success(true)
-                    .data(return_num)
-                    .build();
-
-            return response;
-            
-        }catch (Exception e) {
-            
-            return exceptionHandle(e, e.getMessage(), 500);
+        if(!userId.equals(request.getUserId())){
+            throw new RuntimeException("본인만 수정 할 수 있습니다.");
         }
+
+        Long return_num = service.update(boardNum, userId, request);
+
+        CommonResponse response = CommonResponse.builder()
+                .success(true)
+                .data(return_num)
+                .build();
+
+        return response;
     }
 
     @Operation(summary = "게시글 삭제", description = "글번호, 글의 아이디를 이용하여 삭제합니다.")
@@ -97,39 +76,14 @@ public class BoardController {
                                       @PathVariable Long boardNum,
                                       @RequestHeader(name = "writerId") String writerId) {
 
-        try{
-
-            if(!userId.equals(writerId)){
-                throw new RuntimeException("본인만 삭제 할 수 있습니다.");
-            }
-
-            service.delete(boardNum, userId);
-
-            CommonResponse response = CommonResponse.builder()
-                    .success(true)
-                    .build();
-
-            return response;
-            
-        }catch (Exception e) {
-
-            return exceptionHandle(e, e.getMessage(), 500);
-
+        if(!userId.equals(writerId)){
+            throw new RuntimeException("본인만 삭제 할 수 있습니다.");
         }
-    }
 
-    private CommonResponse exceptionHandle(Exception e, String message, int status){
-
-        e.printStackTrace();
-
-        Error error = Error.builder()
-                .message(message)
-                .status(status)
-                .build();
+        service.delete(boardNum, userId);
 
         CommonResponse response = CommonResponse.builder()
-                .success(false)
-                .error(error)
+                .success(true)
                 .build();
 
         return response;

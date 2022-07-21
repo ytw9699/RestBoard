@@ -37,7 +37,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 			if (token != null && !token.equalsIgnoreCase("null")) {
 
 				String userId = tokenProvider.validateAndGetUserId(token);
-
 				AbstractAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
 								userId,
 								null,
@@ -48,29 +47,28 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 				SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
 				securityContext.setAuthentication(authentication);
 				SecurityContextHolder.setContext(securityContext);//SecurityContext에 등록
+
 			}
 
 			filterChain.doFilter(request, response);
 
 		} catch (Exception ex) {
 
-			log.warn(ex.getMessage());
-
-			ObjectMapper objectMapper = new ObjectMapper();
-			response.setContentType("application/json; charset=UTF-8");
-			response.setStatus(500);
+			ex.printStackTrace();
 
 			Error error = Error.builder()
-					.message("인증 되지 않았습니다.")
+					.message("인증되지 않았습니다.")
 					.status(500)
 					.build();
 
-			CommonResponse errorResponse =  CommonResponse.builder()
+			CommonResponse commonResponse =  CommonResponse.builder()
 					.success(false)
 					.error(error)
 					.build();
 
-			response.getWriter().write(objectMapper.writeValueAsString(errorResponse));
+			ObjectMapper objectMapper = new ObjectMapper();
+
+			response.getWriter().write(objectMapper.writeValueAsString(commonResponse));
 		}
 	}
 

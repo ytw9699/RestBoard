@@ -14,7 +14,7 @@ public class UserService {
 
 	private final UserRepository userRepository;
 
-	public UserEntity create(final UserEntity userEntity) {
+	public UserEntity create(final UserEntity userEntity){
 
 		if(userEntity == null || userEntity.getUserId() == null || userEntity.getNickName() == null) {
 			throw new RuntimeException("Invalid arguments");
@@ -24,23 +24,23 @@ public class UserService {
 			throw new RuntimeException("이미 존재하는 아이디입니다.");
 		}
 
-		if(userRepository.existsByNickName(userEntity.getUserId())) {
+		if(userRepository.existsByNickName(userEntity.getNickName())) {
 			throw new RuntimeException("이미 존재하는 닉네임입니다.");
 		}
 
 		return userRepository.save(userEntity);
 	}
 
-	public UserEntity getUserAuthenticated(final String userId, final String password, final PasswordEncoder encoder) throws Exception{
+	public UserEntity getUserAuthenticated(final String userId, final String password, final PasswordEncoder encoder){
 
 		final UserEntity userEntity = userRepository.findByUserId(userId);
 
 		if(userEntity == null){
-			throw new UsernameNotFoundException(userId);
+			throw new UsernameNotFoundException("아이디가 없거나 비밀번호가 틀립니다.");
 		}
 
 		if(!encoder.matches(password, userEntity.getPassword())) {
-			throw new BadCredentialsException(userId);
+			throw new BadCredentialsException("아이디가 없거나 비밀번호가 틀립니다.");
 		}
 
 		return userEntity;
