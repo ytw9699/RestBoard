@@ -12,11 +12,11 @@ import java.util.Date;
 
 @Slf4j
 @Service
-public class TokenProvider {
+public class TokenProvider{
 
 	private static final String SECRET_KEY = "123gf1ffdhtycUeR4uUAt7WJa5raD7EN3Os4yyYuHxMEbSFdd4XXyffgB0F7Bq4dH";
 
-	public String createToken(UserEntity userEntity) {
+	public String createToken(UserEntity userEntity){
 
 		Date expiryDate = Date.from(
 				Instant.now()
@@ -31,7 +31,7 @@ public class TokenProvider {
 						.compact();
 	}
 
-	public String validateAndGetUserId(String token) {
+	public String validateAndGetUserId(String token){
 		Claims claims = Jwts.parser()
 						.setSigningKey(SECRET_KEY)
 						.parseClaimsJws(token)
